@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛏️ Каталог кроватей</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+        body { background: #f8fafc; padding: 24px; min-height: 100vh; }
+        .catalog { max-width: 1400px; margin: 0 auto; }
+        h1 { font-weight: 600; font-size: 32px; color: #1e293b; margin-bottom: 8px; }
+        .subtitle { color: #64748b; margin-bottom: 32px; font-size: 16px; }
+        
+        /* Сетка карточек */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        
+        /* Карточка кровати */
+        .card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        
+        /* Фото */
+        .card-image { width: 100%; height: 240px; object-fit: cover; background: #f1f5f9; }
+        .card-image-placeholder { width: 100%; height: 240px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #94a3b8; font-size: 48px; }
+        
+        /* Контент */
+        .card-content { padding: 20px; }
+        .card-title { font-weight: 700; font-size: 22px; color: #0f172a; margin-bottom: 8px; }
+        .card-desc { color: #475569; font-size: 14px; line-height: 1.5; margin-bottom: 16px; }
+        
+        /* Цена и кнопка */
+        .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+        .price { font-weight: 700; font-size: 26px; color: #1e293b; }
+        .price small { font-size: 14px; font-weight: 400; color: #64748b; }
+        .btn { background: #1e293b; color: white; border: none; padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s; text-decoration: none; display: inline-block; }
+        .btn:hover { background: #0f172a; }
+        
+        /* Форма добавления (только для вас, можно скрыть) */
+        .admin-panel { margin-bottom: 32px; padding: 20px; background: white; border-radius: 20px; border: 1px solid #e2e8f0; }
+        .admin-title { font-weight: 600; margin-bottom: 16px; color: #1e293b; }
+        .form-row { display: flex; flex-wrap: wrap; gap: 12px; }
+        .form-row input, .form-row textarea { flex: 1 1 200px; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 16px; font-size: 14px; }
+        .form-row button { background: #1e293b; color: white; border: none; padding: 12px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        
+        /* Сообщение */
+        .empty-msg { text-align: center; color: #64748b; padding: 60px; font-size: 18px; }
+    </style>
+</head>
+<body>
+<div class="catalog">
+    <h1>🛏️ Каталог кроватей</h1>
+    <div class="subtitle">Выберите идеальную кровать для вашего интерьера</div>
+    
+    <!-- Админ-панель (видна только вам, можно скрыть) -->
+    <div class="admin-panel">
+        <div class="admin-title">➕ Добавить новую кровать</div>
+        <div class="form-row">
+            <input type="text" id="bedName" placeholder="Название (напр., Кровать №1)" />
+            <input type="text" id="bedPrice" placeholder="Цена (напр., 45 000 ₽)" />
+            <input type="text" id="bedImage" placeholder="Ссылка на фото (URL картинки)" />
+        </div>
+        <div class="form-row" style="margin-top: 12px;">
+            <textarea id="bedDesc" placeholder="Описание (материал, размеры, особенности)" rows="2"></textarea>
+            <button id="addBedBtn">➕ Добавить кровать</button>
+        </div>
+        <p style="font-size: 12px; color: #64748b; margin-top: 12px;">
+            💡 Используйте ссылки на изображения из интернета или загрузите фото на любой хостинг картинок.
+        </p>
+    </div>
+    
+    <!-- Сетка с кроватями -->
+    <div id="bedsGrid" class="grid">
+        <!-- Кровати будут добавлены здесь через JavaScript -->
+    </div>
+</div>
+
+<script>
+(function(){
+    "use strict";
+    
+    // ===== ХРАНИЛИЩЕ =====
+    const STORAGE_KEY = 'beds_catalog';
+    
+    function loadBeds() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try { return JSON.parse(saved); } catch(e) { return []; }
+        }
+        // По умолчанию добавляем три кровати для примера
+        return [
+            {
+                name: 'Кровать №1 — Элеганс',
+                price: '45 000 ₽',
+                image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&h=400&fit=crop',
+                desc: 'Двуспальная кровать с мягким изголовьем. Каркас из массива дерева, обивка — велюр.'
+            },
+            {
+                name: 'Кровать №2 — Лофт',
+                price: '38 500 ₽',
+                image: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=600&h=400&fit=crop',
+                desc: 'Кровать в стиле лофт с металлическим каркасом. Подходит для современных интерьеров.'
+            },
+            {
+                name: 'Кровать №3 — Минимал',
+                price: '52 000 ₽',
+                image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600&h=400&fit=crop',
+                desc: 'Минималистичная кровать с подъемным механизмом и вместительным ящиком для белья.'
+            }
+        ];
+    }
+    
+    function saveBeds(beds) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(beds));
+    }
+    
+    let beds = loadBeds();
+    
+    // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // ===== РЕНДЕР КАТАЛОГА =====
+    function renderCatalog() {
+        const container = document.getElementById('bedsGrid');
+        
+        if (!beds.length) {
+            container.innerHTML = '<div class="empty-msg">Пока нет кроватей. Добавьте первую через админ-панель выше.</div>';
+            return;
+        }
+        
+        container.innerHTML = beds.map((bed, idx) => `
+            <div class="card">
+                ${bed.image 
+                    ? `<img src="${escapeHtml(bed.image)}" alt="${escapeHtml(bed.name)}" class="card-image" onerror="this.parentElement.innerHTML='<div class=\'card-image-placeholder\'>🛏️</div>'">`
+                    : '<div class="card-image-placeholder">🛏️</div>'
+                }
+                <div class="card-content">
+                    <div class="card-title">${escapeHtml(bed.name)}</div>
+                    <div class="card-desc">${escapeHtml(bed.desc)}</div>
+                    <div class="card-footer">
+                        <div class="price">${escapeHtml(bed.price)}</div>
+                        <button class="btn" data-action="deleteBed" data-id="${idx}">🗑️ Удалить</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // ===== ОБРАБОТЧИКИ =====
+    document.getElementById('addBedBtn').addEventListener('click', () => {
+        const name = document.getElementById('bedName').value.trim();
+        const price = document.getElementById('bedPrice').value.trim();
+        const image = document.getElementById('bedImage').value.trim();
+        const desc = document.getElementById('bedDesc').value.trim();
+        
+        if (!name) {
+            alert('Введите название кровати');
+            return;
+        }
+        
+        beds.push({ name, price, image, desc });
+        saveBeds(beds);
+        renderCatalog();
+        
+        // Очищаем поля
+        document.getElementById('bedName').value = '';
+        document.getElementById('bedPrice').value = '';
+        document.getElementById('bedImage').value = '';
+        document.getElementById('bedDesc').value = '';
+    });
+    
+    // Удаление кровати
+    document.addEventListener('click', e => {
+        if (e.target.dataset.action === 'deleteBed') {
+            const id = e.target.dataset.id;
+            if (confirm('Удалить эту кровать из каталога?')) {
+                beds.splice(id, 1);
+                saveBeds(beds);
+                renderCatalog();
+            }
+        }
+    });
+    
+    // Инициализация
+    renderCatalog();
+})();
+</script>
+</body>
+</html>
