@@ -9,25 +9,72 @@
         body { background: #f8fafc; padding: 24px; min-height: 100vh; }
         .catalog { max-width: 1400px; margin: 0 auto; }
         h1 { font-weight: 600; font-size: 32px; color: #1e293b; margin-bottom: 8px; }
-        .subtitle { color: #64748b; margin-bottom: 32px; font-size: 16px; }
-        
-        /* Сетка — 3 колонки на десктопе, адаптивно */
+        .subtitle { color: #64748b; margin-bottom: 24px; font-size: 16px; }
+
+        /* Админ-панель */
+        .admin-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 2px solid #3b82f6;
+            box-shadow: 0 8px 20px rgba(59,130,246,0.1);
+        }
+        .admin-title {
+            font-weight: 700;
+            font-size: 20px;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .form-row input, .form-row textarea {
+            flex: 1 1 200px;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 14px;
+        }
+        .form-row button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .form-row button:hover { background: #2563eb; }
+        .admin-hint {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        .photo-urls-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 14px;
+        }
+
+        /* Сетка */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
             gap: 20px; 
         }
-        
-        /* На мобильных — 1 колонка */
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; }
-        }
-        
-        /* На планшетах — 2 колонки */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        @media (min-width: 769px) and (max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+
         .card { 
             background: white; 
             border-radius: 20px; 
@@ -35,25 +82,71 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.04); 
             border: 1px solid #e2e8f0; 
             transition: transform 0.2s, box-shadow 0.2s; 
+            position: relative;
         }
-        .card:hover { 
-            transform: translateY(-4px); 
-            box-shadow: 0 16px 30px rgba(0,0,0,0.08); 
+        .card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(0,0,0,0.08); }
+
+        /* Номер кровати */
+        .bed-number {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #1e293b;
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
+            padding: 6px 14px;
+            border-radius: 40px;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        
-        /* Фото — фиксированная высота, без растягивания */
-        .card-image { 
-            width: 100%; 
-            height: 200px; 
-            object-fit: cover; 
-            object-position: center;
-            background: #f1f5f9; 
-            cursor: pointer; 
-            transition: opacity 0.2s;
+
+        /* Галерея фото */
+        .photo-gallery {
+            position: relative;
+            height: 200px;
+            background: #f1f5f9;
+        }
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
             display: block;
+            cursor: pointer;
         }
-        .card-image:hover { opacity: 0.9; }
-        
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 5;
+        }
+        .gallery-nav:hover { background: rgba(0,0,0,0.7); }
+        .gallery-prev { left: 8px; }
+        .gallery-next { right: 8px; }
+        .photo-counter {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 5;
+        }
+
         .card-content { padding: 16px; }
         .card-title { 
             font-weight: 700; 
@@ -78,12 +171,33 @@
             font-size: 22px; 
             color: #1e293b; 
         }
-        
+        .admin-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .admin-actions button {
+            background: none;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .admin-actions .edit-btn:hover { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .admin-actions .delete-btn:hover { background: #ef4444; color: white; border-color: #ef4444; }
+
         .image-hint {
             font-size: 11px;
             color: #64748b;
             margin-top: 4px;
             text-align: center;
+        }
+        .empty-msg {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+            font-size: 18px;
         }
     </style>
 </head>
@@ -91,116 +205,224 @@
 <div class="catalog">
     <h1>🛏️ Каталог кроватей</h1>
     <div class="subtitle">Выберите идеальную кровать для вашего интерьера</div>
-    <div class="grid">
-        <!-- Кровать 1 -->
-        <div class="card">
-            <img src="https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png" alt="Кровать" class="card-image" onclick="window.open(this.src, '_blank')">
-            <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-            <div class="card-content">
-                <div class="card-title">Элеганс</div>
-                <div class="card-desc">Двуспальная кровать с мягким изголовьем. Каркас из массива дерева, обивка — велюр.</div>
-                <div class="card-footer">
-                    <div class="price">45 000 ₽</div>
-                </div>
-            </div>
+
+    <!-- АДМИН-ПАНЕЛЬ (видна всегда, только вы знаете, что это) -->
+    <div class="admin-panel">
+        <div class="admin-title">⚙️ Управление каталогом</div>
+        <div class="form-row">
+            <input type="text" id="bedName" placeholder="Название кровати" />
+            <input type="text" id="bedPrice" placeholder="Цена (напр., 45 000 ₽)" />
         </div>
-        <!-- Кровать 2 -->
-        <div class="card">
-            <img src="https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png" alt="Кровать" class="card-image" onclick="window.open(this.src, '_blank')">
-            <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-            <div class="card-content">
-                <div class="card-title">Лофт</div>
-                <div class="card-desc">Кровать в стиле лофт с металлическим каркасом. Подходит для современных интерьеров.</div>
-                <div class="card-footer">
-                    <div class="price">38 500 ₽</div>
-                </div>
-            </div>
+        <div class="form-row">
+            <textarea id="bedDesc" placeholder="Описание" rows="2"></textarea>
         </div>
-        <!-- Кровать 3 -->
-        <div class="card">
-            <img src="https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png" alt="Кровать" class="card-image" onclick="window.open(this.src, '_blank')">
-            <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-            <div class="card-content">
-                <div class="card-title">Минимал</div>
-                <div class="card-desc">Минималистичная кровать с подъемным механизмом и вместительным ящиком для белья.</div>
-                <div class="card-footer">
-                    <div class="price">52 000 ₽</div>
-                </div>
-            </div>
+        <div class="form-row">
+            <input type="text" id="bedPhotos" class="photo-urls-input" placeholder="Ссылки на фото через запятую (до 4 штук)" />
         </div>
-        <!-- Кровать 4 -->
-        <div class="card">
-            <img src="https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png" alt="Кровать" class="card-image" onclick="window.open(this.src, '_blank')">
-            <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-            <div class="card-content">
-                <div class="card-title">Прованс</div>
-                <div class="card-desc">Кровать в стиле прованс из натурального дерева с резными элементами.</div>
-                <div class="card-footer">
-                    <div class="price">61 200 ₽</div>
-                </div>
-            </div>
+        <div class="form-row">
+            <button id="addBedBtn">➕ Добавить кровать</button>
+            <button id="resetDefaultBtn" style="background:#64748b;">🔄 Сбросить на 9 демо-кроватей</button>
         </div>
-        <!-- Кровать 5 -->
-        <div class="card">
-            <img src="https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png" alt="Кровать" class="card-image" onclick="window.open(this.src, '_blank')">
-            <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-            <div class="card-content">
-                <div class="card-title">Хай-тек</div>
-                <div class="card-desc">Современная кровать с подсветкой и встроенными USB-портами.</div>
-                <div class="card-footer">
-                    <div class="price">73 500 ₽</div>
-                </div>
-            </div>
-        </div>
-        <!-- Кровать 6 -->
-        <div class="card">
-            <img src="https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png" alt="Кровать" class="card-image" onclick="window.open(this.src, '_blank')">
-            <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-            <div class="card-content">
-                <div class="card-title">Классик</div>
-                <div class="card-desc">Классическая кровать с высоким изголовьем, обитая экокожей.</div>
-                <div class="card-footer">
-                    <div class="price">49 900 ₽</div>
-                </div>
-            </div>
-        </div>
-        <!-- Кровать 7 -->
-        <div class="card">
-            <img src="https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png" alt="Кровать" class="card-image" onclick="window.open(this.src, '_blank')">
-            <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-            <div class="card-content">
-                <div class="card-title">Сканди</div>
-                <div class="card-desc">Кровать в скандинавском стиле из светлого дерева, лаконичный дизайн.</div>
-                <div class="card-footer">
-                    <div class="price">41 300 ₽</div>
-                </div>
-            </div>
-        </div>
-        <!-- Кровать 8 -->
-        <div class="card">
-            <img src="https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png" alt="Кровать" class="card-image" onclick="window.open(this.src, '_blank')">
-            <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-            <div class="card-content">
-                <div class="card-title">Барокко</div>
-                <div class="card-desc">Роскошная кровать с каретной стяжкой и золотыми элементами декора.</div>
-                <div class="card-footer">
-                    <div class="price">89 000 ₽</div>
-                </div>
-            </div>
-        </div>
-        <!-- Кровать 9 -->
-        <div class="card">
-            <img src="https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png" alt="Кровать" class="card-image" onclick="window.open(this.src, '_blank')">
-            <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-            <div class="card-content">
-                <div class="card-title">Детская</div>
-                <div class="card-desc">Детская кровать с бортиками, из безопасных материалов, яркий дизайн.</div>
-                <div class="card-footer">
-                    <div class="price">27 500 ₽</div>
-                </div>
-            </div>
+        <div class="admin-hint">
+            💡 Для фото загрузите изображения на ImageBan.ru и вставьте прямые ссылки через запятую.<br>
+            ✏️ Для редактирования нажмите «✏️» на карточке кровати.
         </div>
     </div>
+
+    <!-- Сетка с кроватями -->
+    <div id="bedsGrid" class="grid"></div>
 </div>
+
+<script>
+(function(){
+    "use strict";
+
+    const STORAGE_KEY = 'beds_catalog_v2';
+    let nextId = 1;
+
+    // Загрузка данных
+    function loadBeds() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try { 
+                const beds = JSON.parse(saved);
+                if (beds.length > 0) {
+                    nextId = Math.max(...beds.map(b => b.id || 0)) + 1;
+                }
+                return beds;
+            } catch(e) { return defaultBeds(); }
+        }
+        return defaultBeds();
+    }
+
+    // 9 демо-кроватей
+    function defaultBeds() {
+        const basePhoto = 'https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png';
+        return [
+            { id: 1, name: 'Элеганс', price: '45 000 ₽', desc: 'Двуспальная кровать с мягким изголовьем. Каркас из массива дерева, обивка — велюр.', photos: [basePhoto] },
+            { id: 2, name: 'Лофт', price: '38 500 ₽', desc: 'Кровать в стиле лофт с металлическим каркасом.', photos: [basePhoto] },
+            { id: 3, name: 'Минимал', price: '52 000 ₽', desc: 'Минималистичная кровать с подъемным механизмом.', photos: [basePhoto] },
+            { id: 4, name: 'Прованс', price: '61 200 ₽', desc: 'Кровать в стиле прованс из натурального дерева.', photos: [basePhoto] },
+            { id: 5, name: 'Хай-тек', price: '73 500 ₽', desc: 'Современная кровать с подсветкой и USB.', photos: [basePhoto] },
+            { id: 6, name: 'Классик', price: '49 900 ₽', desc: 'Классическая кровать с высоким изголовьем.', photos: [basePhoto] },
+            { id: 7, name: 'Сканди', price: '41 300 ₽', desc: 'Кровать в скандинавском стиле из светлого дерева.', photos: [basePhoto] },
+            { id: 8, name: 'Барокко', price: '89 000 ₽', desc: 'Роскошная кровать с каретной стяжкой.', photos: [basePhoto] },
+            { id: 9, name: 'Детская', price: '27 500 ₽', desc: 'Детская кровать с бортиками.', photos: [basePhoto] }
+        ];
+    }
+
+    function saveBeds(beds) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(beds));
+    }
+
+    let beds = loadBeds();
+    nextId = beds.length > 0 ? Math.max(...beds.map(b => b.id || 0)) + 1 : 1;
+
+    // Рендер каталога
+    function renderCatalog() {
+        const container = document.getElementById('bedsGrid');
+        if (!beds.length) {
+            container.innerHTML = '<div class="empty-msg">Пока нет кроватей. Добавьте первую через админ-панель.</div>';
+            return;
+        }
+
+        container.innerHTML = beds.map((bed, index) => {
+            const photos = bed.photos || [];
+            const photoCount = photos.length;
+            const mainPhoto = photos[0] || '';
+            
+            return `
+                <div class="card" data-bed-id="${bed.id}">
+                    <div class="bed-number">#${bed.id}</div>
+                    <div class="photo-gallery">
+                        <img src="${mainPhoto}" alt="${bed.name}" class="gallery-image" data-photos='${JSON.stringify(photos)}' data-current="0" onclick="window.open(this.src, '_blank')">
+                        ${photoCount > 1 ? `
+                            <button class="gallery-nav gallery-prev" data-action="prevPhoto">‹</button>
+                            <button class="gallery-nav gallery-next" data-action="nextPhoto">›</button>
+                            <span class="photo-counter">1/${photoCount}</span>
+                        ` : ''}
+                    </div>
+                    <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
+                    <div class="card-content">
+                        <div class="card-title">${escapeHtml(bed.name)}</div>
+                        <div class="card-desc">${escapeHtml(bed.desc)}</div>
+                        <div class="card-footer">
+                            <div class="price">${escapeHtml(bed.price)}</div>
+                            <div class="admin-actions">
+                                <button class="edit-btn" data-action="editBed" data-id="${bed.id}">✏️</button>
+                                <button class="delete-btn" data-action="deleteBed" data-id="${bed.id}">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Галерея: переключение фото
+    document.addEventListener('click', e => {
+        const action = e.target.dataset.action;
+        if (action === 'prevPhoto' || action === 'nextPhoto') {
+            const gallery = e.target.closest('.photo-gallery');
+            const img = gallery.querySelector('.gallery-image');
+            const photos = JSON.parse(img.dataset.photos || '[]');
+            let current = parseInt(img.dataset.current) || 0;
+            
+            if (action === 'prevPhoto') {
+                current = (current - 1 + photos.length) % photos.length;
+            } else {
+                current = (current + 1) % photos.length;
+            }
+            
+            img.src = photos[current];
+            img.dataset.current = current;
+            const counter = gallery.querySelector('.photo-counter');
+            if (counter) counter.textContent = `${current+1}/${photos.length}`;
+        }
+    });
+
+    // Добавление кровати
+    document.getElementById('addBedBtn').addEventListener('click', () => {
+        const name = document.getElementById('bedName').value.trim();
+        const price = document.getElementById('bedPrice').value.trim();
+        const desc = document.getElementById('bedDesc').value.trim();
+        const photosStr = document.getElementById('bedPhotos').value.trim();
+        
+        if (!name) { alert('Введите название'); return; }
+        
+        const photos = photosStr ? photosStr.split(',').map(s => s.trim()).filter(s => s) : [];
+        
+        const newBed = {
+            id: nextId++,
+            name,
+            price,
+            desc,
+            photos: photos.length ? photos : ['https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png']
+        };
+        
+        beds.push(newBed);
+        saveBeds(beds);
+        renderCatalog();
+        
+        document.getElementById('bedName').value = '';
+        document.getElementById('bedPrice').value = '';
+        document.getElementById('bedDesc').value = '';
+        document.getElementById('bedPhotos').value = '';
+    });
+
+    // Удаление и редактирование
+    document.addEventListener('click', e => {
+        const action = e.target.dataset.action;
+        const id = parseInt(e.target.dataset.id);
+        const bedIndex = beds.findIndex(b => b.id === id);
+        if (bedIndex === -1) return;
+        
+        if (action === 'deleteBed') {
+            if (confirm('Удалить эту кровать?')) {
+                beds.splice(bedIndex, 1);
+                saveBeds(beds);
+                renderCatalog();
+            }
+        } else if (action === 'editBed') {
+            const bed = beds[bedIndex];
+            const newName = prompt('Название', bed.name);
+            if (newName === null) return;
+            const newPrice = prompt('Цена', bed.price);
+            if (newPrice === null) return;
+            const newDesc = prompt('Описание', bed.desc);
+            if (newDesc === null) return;
+            const newPhotos = prompt('Ссылки на фото через запятую', (bed.photos || []).join(', '));
+            if (newPhotos === null) return;
+            
+            bed.name = newName;
+            bed.price = newPrice;
+            bed.desc = newDesc;
+            bed.photos = newPhotos ? newPhotos.split(',').map(s => s.trim()).filter(s => s) : bed.photos;
+            
+            saveBeds(beds);
+            renderCatalog();
+        }
+    });
+
+    // Сброс на 9 демо-кроватей
+    document.getElementById('resetDefaultBtn').addEventListener('click', () => {
+        if (confirm('Сбросить каталог на 9 демо-кроватей? Все текущие данные будут потеряны.')) {
+            beds = defaultBeds();
+            nextId = Math.max(...beds.map(b => b.id)) + 1;
+            saveBeds(beds);
+            renderCatalog();
+        }
+    });
+
+    renderCatalog();
+})();
+</script>
 </body>
 </html>
