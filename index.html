@@ -25,9 +25,6 @@
             font-size: 20px;
             color: #1e293b;
             margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         .form-row {
             display: flex;
@@ -50,21 +47,8 @@
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        .form-row button:hover { background: #2563eb; }
-        .admin-hint {
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 8px;
-        }
-        .photo-urls-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 14px;
-        }
+        .admin-hint { font-size: 12px; color: #64748b; margin-top: 8px; }
 
         /* Сетка */
         .grid { 
@@ -81,12 +65,11 @@
             overflow: hidden; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.04); 
             border: 1px solid #e2e8f0; 
-            transition: transform 0.2s, box-shadow 0.2s; 
-            position: relative;
+            transition: transform 0.2s; 
+            cursor: pointer;
         }
         .card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(0,0,0,0.08); }
 
-        /* Номер кровати */
         .bed-number {
             position: absolute;
             top: 12px;
@@ -98,329 +81,237 @@
             padding: 6px 14px;
             border-radius: 40px;
             z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-
-        /* Галерея фото */
-        .photo-gallery {
-            position: relative;
-            height: 200px;
-            background: #f1f5f9;
-        }
-        .gallery-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            display: block;
-            cursor: pointer;
-        }
-        .gallery-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            z-index: 5;
-        }
-        .gallery-nav:hover { background: rgba(0,0,0,0.7); }
-        .gallery-prev { left: 8px; }
-        .gallery-next { right: 8px; }
-        .photo-counter {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            z-index: 5;
-        }
-
+        .card-image { width: 100%; height: 200px; object-fit: cover; display: block; }
         .card-content { padding: 16px; }
-        .card-title { 
-            font-weight: 700; 
-            font-size: 18px; 
-            color: #0f172a; 
-            margin-bottom: 6px; 
-        }
-        .card-desc { 
-            color: #475569; 
-            font-size: 13px; 
-            line-height: 1.4; 
-            margin-bottom: 14px; 
-        }
-        .card-footer { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            margin-top: 6px; 
-        }
-        .price { 
-            font-weight: 700; 
-            font-size: 22px; 
-            color: #1e293b; 
-        }
-        .admin-actions {
-            display: flex;
-            gap: 8px;
-        }
-        .admin-actions button {
-            background: none;
-            border: 1px solid #cbd5e1;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .admin-actions .edit-btn:hover { background: #3b82f6; color: white; border-color: #3b82f6; }
-        .admin-actions .delete-btn:hover { background: #ef4444; color: white; border-color: #ef4444; }
+        .card-title { font-weight: 700; font-size: 18px; color: #0f172a; margin-bottom: 6px; }
+        .card-desc { color: #475569; font-size: 13px; line-height: 1.4; margin-bottom: 14px; }
+        .card-footer { display: flex; align-items: center; justify-content: space-between; }
+        .price { font-weight: 700; font-size: 22px; color: #1e293b; }
+        .admin-actions { display: flex; gap: 8px; }
+        .admin-actions button { background: none; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; cursor: pointer; }
+        .empty-msg { text-align: center; padding: 60px; color: #64748b; }
 
-        .image-hint {
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 4px;
-            text-align: center;
-        }
-        .empty-msg {
-            text-align: center;
-            padding: 60px;
-            color: #64748b;
-            font-size: 18px;
-        }
+        /* Модальное окно конфигуратора */
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 24px; max-width: 1000px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 24px; }
+        .modal-close { float: right; font-size: 28px; cursor: pointer; background: none; border: none; }
+        .modal-gallery { display: flex; gap: 10px; margin: 20px 0; overflow-x: auto; }
+        .modal-gallery img { height: 200px; border-radius: 16px; cursor: pointer; }
+        .config-section { background: #f8fafc; border-radius: 20px; padding: 20px; margin: 20px 0; }
+        .config-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
+        .config-row:last-child { border-bottom: none; }
+        .config-label { font-weight: 500; }
+        .config-options { display: flex; gap: 16px; }
+        .config-options label { cursor: pointer; }
+        .total-price { font-size: 28px; font-weight: 700; color: #1e293b; text-align: right; margin-top: 20px; }
     </style>
 </head>
 <body>
 <div class="catalog">
-    <h1>🛏️ Каталог кроватей</h1>
-    <div class="subtitle">Выберите идеальную кровать для вашего интерьера</div>
+    <h1>🛏️ Конфигуратор кроватей</h1>
+    <div class="subtitle">Выберите модель и настройте под себя</div>
 
-    <!-- АДМИН-ПАНЕЛЬ (видна всегда, только вы знаете, что это) -->
+    <!-- Админ-панель -->
     <div class="admin-panel">
         <div class="admin-title">⚙️ Управление каталогом</div>
         <div class="form-row">
-            <input type="text" id="bedName" placeholder="Название кровати" />
-            <input type="text" id="bedPrice" placeholder="Цена (напр., 45 000 ₽)" />
+            <input type="text" id="bedName" placeholder="Название модели" />
+            <input type="text" id="bedBasePrice" placeholder="Базовая цена (напр., 45000)" />
         </div>
         <div class="form-row">
             <textarea id="bedDesc" placeholder="Описание" rows="2"></textarea>
         </div>
         <div class="form-row">
-            <input type="text" id="bedPhotos" class="photo-urls-input" placeholder="Ссылки на фото через запятую (до 4 штук)" />
+            <input type="text" id="bedPhotos" placeholder="Ссылки на фото через запятую" />
         </div>
         <div class="form-row">
-            <button id="addBedBtn">➕ Добавить кровать</button>
-            <button id="resetDefaultBtn" style="background:#64748b;">🔄 Сбросить на 9 демо-кроватей</button>
+            <input type="text" id="priceWidth120" placeholder="+ цена за 120 см" />
+            <input type="text" id="priceWidth140" placeholder="+ цена за 140 см" />
+            <input type="text" id="priceWidth180" placeholder="+ цена за 180 см" />
+            <input type="text" id="priceWidth200" placeholder="+ цена за 200 см" />
+        </div>
+        <div class="form-row">
+            <input type="text" id="priceOrtho" placeholder="+ цена за ортопед. основание" />
+            <input type="text" id="priceLift" placeholder="+ цена за подъёмный механизм" />
+        </div>
+        <div class="form-row">
+            <button id="addBedBtn">➕ Добавить модель</button>
+            <button id="resetDefaultBtn" style="background:#64748b;">🔄 Сбросить на демо</button>
         </div>
         <div class="admin-hint">
-            💡 Для фото загрузите изображения на ImageBan.ru и вставьте прямые ссылки через запятую.<br>
-            ✏️ Для редактирования нажмите «✏️» на карточке кровати.
+            💡 Базовая ширина — 100 см (включена в базовую цену). Остальные ширины — доплата.
         </div>
     </div>
 
-    <!-- Сетка с кроватями -->
     <div id="bedsGrid" class="grid"></div>
+</div>
+
+<!-- Модальное окно конфигуратора -->
+<div id="configModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="document.getElementById('configModal').classList.remove('active')">&times;</button>
+        <h2 id="modalTitle"></h2>
+        <div id="modalGallery" class="modal-gallery"></div>
+        <p id="modalDesc"></p>
+        <div class="config-section">
+            <div class="config-row">
+                <span class="config-label">Ширина спального места:</span>
+                <div class="config-options" id="widthOptions"></div>
+            </div>
+            <div class="config-row">
+                <span class="config-label">Ортопедическое основание:</span>
+                <div class="config-options">
+                    <label><input type="radio" name="ortho" value="0" checked> Не нужно</label>
+                    <label><input type="radio" name="ortho" value="1"> Нужно (<span id="orthoPrice">0</span> ₽)</label>
+                </div>
+            </div>
+            <div class="config-row">
+                <span class="config-label">Подъёмный механизм:</span>
+                <div class="config-options">
+                    <label><input type="radio" name="lift" value="0" checked> Не нужно</label>
+                    <label><input type="radio" name="lift" value="1"> Нужно (<span id="liftPrice">0</span> ₽)</label>
+                </div>
+            </div>
+        </div>
+        <div class="total-price">Итого: <span id="totalPrice">0</span> ₽</div>
+    </div>
 </div>
 
 <script>
 (function(){
     "use strict";
-
-    const STORAGE_KEY = 'beds_catalog_v2';
+    const STORAGE_KEY = 'beds_configurator_v1';
     let nextId = 1;
 
-    // Загрузка данных
-    function loadBeds() {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            try { 
-                const beds = JSON.parse(saved);
-                if (beds.length > 0) {
-                    nextId = Math.max(...beds.map(b => b.id || 0)) + 1;
-                }
-                return beds;
-            } catch(e) { return defaultBeds(); }
-        }
-        return defaultBeds();
-    }
-
-    // 9 демо-кроватей
     function defaultBeds() {
         const basePhoto = 'https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png';
         return [
-            { id: 1, name: 'Элеганс', price: '45 000 ₽', desc: 'Двуспальная кровать с мягким изголовьем. Каркас из массива дерева, обивка — велюр.', photos: [basePhoto] },
-            { id: 2, name: 'Лофт', price: '38 500 ₽', desc: 'Кровать в стиле лофт с металлическим каркасом.', photos: [basePhoto] },
-            { id: 3, name: 'Минимал', price: '52 000 ₽', desc: 'Минималистичная кровать с подъемным механизмом.', photos: [basePhoto] },
-            { id: 4, name: 'Прованс', price: '61 200 ₽', desc: 'Кровать в стиле прованс из натурального дерева.', photos: [basePhoto] },
-            { id: 5, name: 'Хай-тек', price: '73 500 ₽', desc: 'Современная кровать с подсветкой и USB.', photos: [basePhoto] },
-            { id: 6, name: 'Классик', price: '49 900 ₽', desc: 'Классическая кровать с высоким изголовьем.', photos: [basePhoto] },
-            { id: 7, name: 'Сканди', price: '41 300 ₽', desc: 'Кровать в скандинавском стиле из светлого дерева.', photos: [basePhoto] },
-            { id: 8, name: 'Барокко', price: '89 000 ₽', desc: 'Роскошная кровать с каретной стяжкой.', photos: [basePhoto] },
-            { id: 9, name: 'Детская', price: '27 500 ₽', desc: 'Детская кровать с бортиками.', photos: [basePhoto] }
+            { id: 1, name: 'Элеганс', basePrice: 45000, desc: 'Двуспальная кровать с мягким изголовьем.', photos: [basePhoto],
+              prices: { width120: 3000, width140: 6000, width180: 10000, width200: 14000, ortho: 5000, lift: 7000 } },
+            { id: 2, name: 'Лофт', basePrice: 38500, desc: 'Кровать в стиле лофт с металлическим каркасом.', photos: [basePhoto],
+              prices: { width120: 2500, width140: 5000, width180: 8500, width200: 12000, ortho: 5000, lift: 7000 } }
         ];
     }
 
-    function saveBeds(beds) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(beds));
-    }
-
     let beds = loadBeds();
-    nextId = beds.length > 0 ? Math.max(...beds.map(b => b.id || 0)) + 1 : 1;
+    function loadBeds() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) { try { return JSON.parse(saved); } catch(e) { return defaultBeds(); } }
+        return defaultBeds();
+    }
+    function saveBeds() { localStorage.setItem(STORAGE_KEY, JSON.stringify(beds)); }
 
-    // Рендер каталога
+    let currentBed = null;
     function renderCatalog() {
-        const container = document.getElementById('bedsGrid');
-        if (!beds.length) {
-            container.innerHTML = '<div class="empty-msg">Пока нет кроватей. Добавьте первую через админ-панель.</div>';
-            return;
-        }
-
-        container.innerHTML = beds.map((bed, index) => {
-            const photos = bed.photos || [];
-            const photoCount = photos.length;
-            const mainPhoto = photos[0] || '';
-            
-            return `
-                <div class="card" data-bed-id="${bed.id}">
-                    <div class="bed-number">#${bed.id}</div>
-                    <div class="photo-gallery">
-                        <img src="${mainPhoto}" alt="${bed.name}" class="gallery-image" data-photos='${JSON.stringify(photos)}' data-current="0" onclick="window.open(this.src, '_blank')">
-                        ${photoCount > 1 ? `
-                            <button class="gallery-nav gallery-prev" data-action="prevPhoto">‹</button>
-                            <button class="gallery-nav gallery-next" data-action="nextPhoto">›</button>
-                            <span class="photo-counter">1/${photoCount}</span>
-                        ` : ''}
-                    </div>
-                    <div class="image-hint">🔍 Нажмите на фото, чтобы увеличить</div>
-                    <div class="card-content">
-                        <div class="card-title">${escapeHtml(bed.name)}</div>
-                        <div class="card-desc">${escapeHtml(bed.desc)}</div>
-                        <div class="card-footer">
-                            <div class="price">${escapeHtml(bed.price)}</div>
-                            <div class="admin-actions">
-                                <button class="edit-btn" data-action="editBed" data-id="${bed.id}">✏️</button>
-                                <button class="delete-btn" data-action="deleteBed" data-id="${bed.id}">🗑️</button>
-                            </div>
+        const grid = document.getElementById('bedsGrid');
+        if (!beds.length) { grid.innerHTML = '<div class="empty-msg">Нет моделей</div>'; return; }
+        grid.innerHTML = beds.map(bed => `
+            <div class="card" style="position: relative;" onclick="openConfig(${bed.id})">
+                <div class="bed-number">#${bed.id}</div>
+                <img src="${bed.photos[0]}" class="card-image">
+                <div class="card-content">
+                    <div class="card-title">${escapeHtml(bed.name)}</div>
+                    <div class="card-desc">${escapeHtml(bed.desc)}</div>
+                    <div class="card-footer">
+                        <div class="price">от ${bed.basePrice.toLocaleString()} ₽</div>
+                        <div class="admin-actions">
+                            <button onclick="event.stopPropagation(); editBed(${bed.id})">✏️</button>
+                            <button onclick="event.stopPropagation(); deleteBed(${bed.id})">🗑️</button>
                         </div>
                     </div>
                 </div>
-            `;
-        }).join('');
+            </div>
+        `).join('');
     }
 
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+    window.openConfig = function(id) {
+        currentBed = beds.find(b => b.id === id);
+        if (!currentBed) return;
+        document.getElementById('modalTitle').textContent = currentBed.name;
+        document.getElementById('modalDesc').textContent = currentBed.desc;
+        const gallery = document.getElementById('modalGallery');
+        gallery.innerHTML = currentBed.photos.map(p => `<img src="${p}" onclick="window.open(this.src)">`).join('');
+        
+        const widthOptions = document.getElementById('widthOptions');
+        const widths = [
+            { val: 100, label: '100 см', price: 0 },
+            { val: 120, label: '120 см', price: currentBed.prices?.width120 || 0 },
+            { val: 140, label: '140 см', price: currentBed.prices?.width140 || 0 },
+            { val: 180, label: '180 см', price: currentBed.prices?.width180 || 0 },
+            { val: 200, label: '200 см', price: currentBed.prices?.width200 || 0 }
+        ];
+        widthOptions.innerHTML = widths.map((w, i) => 
+            `<label><input type="radio" name="width" value="${w.val}" data-price="${w.price}" ${i === 0 ? 'checked' : ''}> ${w.label} ${w.price > 0 ? '(+' + w.price + ' ₽)' : ''}</label>`
+        ).join('');
+        
+        document.getElementById('orthoPrice').textContent = currentBed.prices?.ortho || 0;
+        document.getElementById('liftPrice').textContent = currentBed.prices?.lift || 0;
+        
+        document.querySelectorAll('input[name="width"], input[name="ortho"], input[name="lift"]').forEach(el => el.addEventListener('change', updateTotal));
+        updateTotal();
+        document.getElementById('configModal').classList.add('active');
+    };
+
+    function updateTotal() {
+        const base = currentBed.basePrice;
+        const widthPrice = parseInt(document.querySelector('input[name="width"]:checked')?.dataset.price || 0);
+        const orthoPrice = document.querySelector('input[name="ortho"]:checked')?.value === '1' ? (currentBed.prices?.ortho || 0) : 0;
+        const liftPrice = document.querySelector('input[name="lift"]:checked')?.value === '1' ? (currentBed.prices?.lift || 0) : 0;
+        document.getElementById('totalPrice').textContent = (base + widthPrice + orthoPrice + liftPrice).toLocaleString();
     }
 
-    // Галерея: переключение фото
-    document.addEventListener('click', e => {
-        const action = e.target.dataset.action;
-        if (action === 'prevPhoto' || action === 'nextPhoto') {
-            const gallery = e.target.closest('.photo-gallery');
-            const img = gallery.querySelector('.gallery-image');
-            const photos = JSON.parse(img.dataset.photos || '[]');
-            let current = parseInt(img.dataset.current) || 0;
-            
-            if (action === 'prevPhoto') {
-                current = (current - 1 + photos.length) % photos.length;
-            } else {
-                current = (current + 1) % photos.length;
-            }
-            
-            img.src = photos[current];
-            img.dataset.current = current;
-            const counter = gallery.querySelector('.photo-counter');
-            if (counter) counter.textContent = `${current+1}/${photos.length}`;
-        }
-    });
+    window.editBed = function(id) {
+        const bed = beds.find(b => b.id === id);
+        if (!bed) return;
+        bed.name = prompt('Название', bed.name) || bed.name;
+        bed.basePrice = parseInt(prompt('Базовая цена', bed.basePrice)) || bed.basePrice;
+        bed.desc = prompt('Описание', bed.desc) || bed.desc;
+        if (!bed.prices) bed.prices = {};
+        bed.prices.width120 = parseInt(prompt('+ цена за 120 см', bed.prices.width120 || 0)) || 0;
+        bed.prices.width140 = parseInt(prompt('+ цена за 140 см', bed.prices.width140 || 0)) || 0;
+        bed.prices.width180 = parseInt(prompt('+ цена за 180 см', bed.prices.width180 || 0)) || 0;
+        bed.prices.width200 = parseInt(prompt('+ цена за 200 см', bed.prices.width200 || 0)) || 0;
+        bed.prices.ortho = parseInt(prompt('+ цена за ортопед. основание', bed.prices.ortho || 0)) || 0;
+        bed.prices.lift = parseInt(prompt('+ цена за подъёмный механизм', bed.prices.lift || 0)) || 0;
+        saveBeds(); renderCatalog();
+    };
 
-    // Добавление кровати
+    window.deleteBed = function(id) {
+        if (!confirm('Удалить модель?')) return;
+        beds = beds.filter(b => b.id !== id);
+        saveBeds(); renderCatalog();
+    };
+
     document.getElementById('addBedBtn').addEventListener('click', () => {
         const name = document.getElementById('bedName').value.trim();
-        const price = document.getElementById('bedPrice').value.trim();
-        const desc = document.getElementById('bedDesc').value.trim();
-        const photosStr = document.getElementById('bedPhotos').value.trim();
-        
+        const basePrice = parseInt(document.getElementById('bedBasePrice').value) || 0;
         if (!name) { alert('Введите название'); return; }
-        
-        const photos = photosStr ? photosStr.split(',').map(s => s.trim()).filter(s => s) : [];
-        
         const newBed = {
-            id: nextId++,
-            name,
-            price,
-            desc,
-            photos: photos.length ? photos : ['https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png']
-        };
-        
-        beds.push(newBed);
-        saveBeds(beds);
-        renderCatalog();
-        
-        document.getElementById('bedName').value = '';
-        document.getElementById('bedPrice').value = '';
-        document.getElementById('bedDesc').value = '';
-        document.getElementById('bedPhotos').value = '';
-    });
-
-    // Удаление и редактирование
-    document.addEventListener('click', e => {
-        const action = e.target.dataset.action;
-        const id = parseInt(e.target.dataset.id);
-        const bedIndex = beds.findIndex(b => b.id === id);
-        if (bedIndex === -1) return;
-        
-        if (action === 'deleteBed') {
-            if (confirm('Удалить эту кровать?')) {
-                beds.splice(bedIndex, 1);
-                saveBeds(beds);
-                renderCatalog();
+            id: Math.max(0, ...beds.map(b => b.id)) + 1,
+            name, basePrice,
+            desc: document.getElementById('bedDesc').value.trim(),
+            photos: document.getElementById('bedPhotos').value.split(',').map(s => s.trim()).filter(s => s),
+            prices: {
+                width120: parseInt(document.getElementById('priceWidth120').value) || 0,
+                width140: parseInt(document.getElementById('priceWidth140').value) || 0,
+                width180: parseInt(document.getElementById('priceWidth180').value) || 0,
+                width200: parseInt(document.getElementById('priceWidth200').value) || 0,
+                ortho: parseInt(document.getElementById('priceOrtho').value) || 0,
+                lift: parseInt(document.getElementById('priceLift').value) || 0
             }
-        } else if (action === 'editBed') {
-            const bed = beds[bedIndex];
-            const newName = prompt('Название', bed.name);
-            if (newName === null) return;
-            const newPrice = prompt('Цена', bed.price);
-            if (newPrice === null) return;
-            const newDesc = prompt('Описание', bed.desc);
-            if (newDesc === null) return;
-            const newPhotos = prompt('Ссылки на фото через запятую', (bed.photos || []).join(', '));
-            if (newPhotos === null) return;
-            
-            bed.name = newName;
-            bed.price = newPrice;
-            bed.desc = newDesc;
-            bed.photos = newPhotos ? newPhotos.split(',').map(s => s.trim()).filter(s => s) : bed.photos;
-            
-            saveBeds(beds);
-            renderCatalog();
-        }
+        };
+        if (!newBed.photos.length) newBed.photos = ['https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png'];
+        beds.push(newBed); saveBeds(); renderCatalog();
+        ['bedName','bedBasePrice','bedDesc','bedPhotos','priceWidth120','priceWidth140','priceWidth180','priceWidth200','priceOrtho','priceLift'].forEach(id => document.getElementById(id).value = '');
     });
 
-    // Сброс на 9 демо-кроватей
     document.getElementById('resetDefaultBtn').addEventListener('click', () => {
-        if (confirm('Сбросить каталог на 9 демо-кроватей? Все текущие данные будут потеряны.')) {
-            beds = defaultBeds();
-            nextId = Math.max(...beds.map(b => b.id)) + 1;
-            saveBeds(beds);
-            renderCatalog();
-        }
+        if (confirm('Сбросить на демо-модели?')) { beds = defaultBeds(); saveBeds(); renderCatalog(); }
     });
 
+    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     renderCatalog();
 })();
 </script>
