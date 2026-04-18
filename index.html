@@ -37,11 +37,6 @@
             transition: transform 0.2s; cursor: pointer; position: relative;
         }
         .card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(0,0,0,0.08); }
-        .bed-number {
-            position: absolute; top: 12px; left: 12px; background: #1e293b;
-            color: white; font-weight: 800; font-size: 20px; padding: 6px 14px;
-            border-radius: 40px; z-index: 10;
-        }
         .card-image { width: 100%; height: 200px; object-fit: cover; display: block; }
         .card-content { padding: 16px; }
         .card-title { font-weight: 700; font-size: 18px; color: #0f172a; margin-bottom: 6px; }
@@ -86,11 +81,7 @@
     <div class="admin-panel">
         <div class="admin-title">⚙️ Управление каталогом</div>
         <div class="form-row">
-            <input type="text" id="bedName" placeholder="Название модели" />
             <input type="text" id="bedBasePrice" placeholder="Базовая цена (120 см, велюр Seven, станд. решётка)" />
-        </div>
-        <div class="form-row">
-            <textarea id="bedDesc" placeholder="Описание" rows="2"></textarea>
         </div>
         <div class="form-row">
             <input type="text" id="bedPhotos" placeholder="Ссылки на фото через запятую" />
@@ -111,7 +102,7 @@
             <button id="resetDefaultBtn" style="background:#64748b;">🔄 Сбросить на демо</button>
         </div>
         <div class="admin-hint">
-            💡 Базовая комплектация: ширина 120 см, велюр Seven, стандартная решётка, без подъёмника.
+            💡 Название и описание генерируются автоматически. Базовая комплектация: ширина 120 см, велюр Seven, стандартная решётка, без подъёмника.
         </div>
     </div>
 
@@ -156,15 +147,96 @@
 <script>
 (function(){
     "use strict";
-    const STORAGE_KEY = 'beds_configurator_v2';
+    const STORAGE_KEY = 'beds_configurator_v3';
+
+    // Список сказочных имён
+    const fairyNames = [
+        'Буратино', 'Мальвина', 'Пьеро', 'Артемон', 'Чебурашка', 'Незнайка', 'Кнопочка', 'Гунька',
+        'Винни-Пух', 'Пятачок', 'Кролик', 'Иа', 'Карлсон', 'Малыш', 'Дядя Фёдор', 'Кот Матроскин',
+        'Шарик', 'Почтальон Печкин', 'Волк', 'Заяц', 'Крошка Енот', 'Львёнок', 'Черепаха',
+        'Бременские музыканты', 'Кот Леопольд', 'Домовёнок Кузя', 'Хрюша', 'Степашка', 'Вовка',
+        'Илья Муромец', 'Золушка', 'Чиполлино', 'Синьор Помидор', 'Дюймовочка', 'Русалочка',
+        'Шурик', 'Трус', 'Балбес', 'Бывалый', 'Женя Лукашин', 'Надя Шевелёва', 'Ипполит',
+        'Гена Букин', 'Даша Букина', 'Штирлиц', 'Глеб Жеглов', 'Володя Шарапов', 'Доктор Быков', 'Лобанов'
+    ];
+
+    // Список фраз-описаний
+    const descriptions = [
+        "На этой кровати Незнайка мечтал о путешествии на Луну.",
+        "Если бы не эта кровать, Чебурашка не нашёл бы друзей.",
+        "Как же нравилась эта кровать коту Матроскину — он бы на ней и корову доил.",
+        "На этой кровати Винни-Пух проверял, поместится ли горшочек мёда.",
+        "Если бы не эта кровать, Карлсон не долетел бы до Малыша.",
+        "Как же нравилась эта кровать попугаю Кеше — «Вы не были на Таити? А кровать хороша!»",
+        "На этой кровати Дядя Фёдор писал письмо родителям.",
+        "Если бы не эта кровать, Волк из «Ну, погоди!» не выспался бы перед погоней.",
+        "Как же нравилась эта кровать Крошке Еноту — он проверял, не живёт ли тут Тот-Кто-Сидит-В-Пруду.",
+        "На этой кровати Бременские музыканты репетировали колыбельную.",
+        "Если бы не эта кровать, Львёнок и Черепаха не спели бы «Я на солнышке лежу».",
+        "Как же нравилась эта кровать Малышу — он прятал тут плюшки от Карлсона.",
+        "На этой кровати кот Леопольд уговаривал мышей: «Ребята, давайте жить дружно!»",
+        "Если бы не эта кровать, Домовёнок Кузя не спрятал бы свой сундучок.",
+        "Как же нравилась эта кровать Хрюше и Степашке — они мечтали тут уснуть.",
+        "На этой кровати Почтальон Печкин стучал: «Вам посылка!»",
+        "Если бы не эта кровать, Вовка из Тридевятого царства не крикнул бы: «И так сойдёт!»",
+        "Как же нравилась эта кровать Илье Муромцу — он на ней 33 года лежал.",
+        "На этой кровати Золушка мечтала о бале.",
+        "Если бы не эта кровать, Буратино не нашёл бы золотой ключик.",
+        "Как же нравилась эта кровать Пьеро — он сочинял на ней грустные стихи.",
+        "На этой кровати Артемон охранял сон Мальвины.",
+        "Если бы не эта кровать, Чиполлино не собрал бы луковый урожай.",
+        "Как же нравилась эта кровать Синьору Помидору — он проверял, не спрятался ли тут бунтовщик.",
+        "На этой кровати Дюймовочка могла бы потеряться в складках пледа.",
+        "Если бы не эта кровать, Стойкий оловянный солдатик не выстоял бы пост.",
+        "Как же нравилась эта кровать Русалочке — она рассматривала её из-под воды.",
+        "На этой кровати Снежная Королева никогда бы не замёрзла.",
+        "Если бы не эта кровать, Шурик из «Кавказской пленницы» не выспался бы перед приключениями.",
+        "Как же нравилась эта кровать Трусу, Балбесу и Бывалому — они бы тут план разрабатывали.",
+        "На этой кровати Женя Лукашин из «Иронии судьбы» проспал бы свой рейс.",
+        "Если бы не эта кровать, Надя Шевелёва не встретила бы свою судьбу.",
+        "Как же нравилась эта кровать Ипполиту — он бы тут душу изливал.",
+        "На этой кровати Гена Букин из «Счастливы вместе» смотрел бы футбол.",
+        "Если бы не эта кровать, Даша Букина не примерила бы новый наряд.",
+        "Как же нравилась эта кровать Ворониным — они бы тут семейный совет держали.",
+        "На этой кровати Штирлиц прятал бы рацию.",
+        "Если бы не эта кровать, Глеб Жеглов не распутал бы дело.",
+        "Как же нравилась эта кровать Володе Шарапову — он бы тут отдыхал после засады.",
+        "На этой кровати Доктор Быков из «Интернов» давал бы указания.",
+        "Если бы не эта кровать, Лобанов не придумал бы новый гениальный план.",
+        "Как же нравилась эта кровать Купитману — он бы тут коньяк пил.",
+        "На этой кровати Катя Пушкарёва мечтала о красивой жизни.",
+        "Если бы не эта кровать, Андрей Жданов не признался бы в любви.",
+        "Как же нравилась эта кровать Кире Воропаевой — она бы тут бизнес-план составляла.",
+        "На этой кровати Мажор Соколовский прятался от проблем.",
+        "Если бы не эта кровать, Вика Прудникова не распутала бы дело.",
+        "Как же нравилась эта кровать Фоме — он бы тут стихи читал.",
+        "На этой кровати Бригада обсуждала бы важные вопросы.",
+        "Если бы не эта кровать, Саша Белый не восстановил бы справедливость."
+    ];
+
+    function generateBedName(id) {
+        const nameIndex = (id - 1) % fairyNames.length;
+        return `№${id} — ${fairyNames[nameIndex]}`;
+    }
+
+    function generateBedDesc() {
+        return descriptions[Math.floor(Math.random() * descriptions.length)];
+    }
+
     function defaultBeds() {
         const basePhoto = 'https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png';
-        return [
-            { id: 1, name: 'Элеганс', basePrice: 45000, desc: 'Двуспальная кровать с мягким изголовьем.', photos: [basePhoto],
-              prices: { width140: 3000, width160: 7000, width180: 11000, width200: 15000, teddy: 4000, lamels: 10000, lift: 9000 } },
-            { id: 2, name: 'Лофт', basePrice: 38500, desc: 'Кровать в стиле лофт с металлическим каркасом.', photos: [basePhoto],
-              prices: { width140: 2500, width160: 6000, width180: 10000, width200: 14000, teddy: 4000, lamels: 10000, lift: 9000 } }
-        ];
+        const beds = [];
+        for (let i = 1; i <= 9; i++) {
+            beds.push({
+                id: i,
+                name: generateBedName(i),
+                basePrice: 45000,
+                desc: generateBedDesc(),
+                photos: [basePhoto],
+                prices: { width140: 3000, width160: 7000, width180: 11000, width200: 15000, teddy: 4000, lamels: 10000, lift: 9000 }
+            });
+        }
+        return beds;
     }
 
     let beds = loadBeds();
@@ -181,7 +253,6 @@
         if (!beds.length) { grid.innerHTML = '<div class="empty-msg">Нет моделей</div>'; return; }
         grid.innerHTML = beds.map(bed => `
             <div class="card" style="position: relative;" onclick="openConfig(${bed.id})">
-                <div class="bed-number">#${bed.id}</div>
                 <img src="${bed.photos[0]}" class="card-image">
                 <div class="card-content">
                     <div class="card-title">${escapeHtml(bed.name)}</div>
@@ -189,7 +260,6 @@
                     <div class="card-footer">
                         <div class="price">от ${bed.basePrice.toLocaleString()} ₽</div>
                         <div class="admin-actions">
-                            <button onclick="event.stopPropagation(); editBed(${bed.id})">✏️</button>
                             <button onclick="event.stopPropagation(); deleteBed(${bed.id})">🗑️</button>
                         </div>
                     </div>
@@ -257,7 +327,7 @@
         const lift = document.querySelector('input[name="lift"]:checked')?.value === '1' ? 'с подъёмным механизмом' : 'без подъёмного механизма';
         const total = document.getElementById('totalPrice').textContent;
 
-        const kpText = `Коммерческое предложение на кровать "${currentBed.name}" (арт. #${currentBed.id})
+        const kpText = `Коммерческое предложение на кровать "${currentBed.name}"
         
 Выбранные опции:
 • Ширина: ${widthLabel}
@@ -280,23 +350,6 @@
         navigator.clipboard?.writeText(text).then(() => alert('✅ КП скопировано!'));
     });
 
-    window.editBed = function(id) {
-        const bed = beds.find(b => b.id === id);
-        if (!bed) return;
-        bed.name = prompt('Название', bed.name) || bed.name;
-        bed.basePrice = parseInt(prompt('Базовая цена (120 см, Seven, станд.)', bed.basePrice)) || bed.basePrice;
-        bed.desc = prompt('Описание', bed.desc) || bed.desc;
-        if (!bed.prices) bed.prices = {};
-        bed.prices.width140 = parseInt(prompt('+ цена за 140 см', bed.prices.width140 || 0)) || 0;
-        bed.prices.width160 = parseInt(prompt('+ цена за 160 см', bed.prices.width160 || 0)) || 0;
-        bed.prices.width180 = parseInt(prompt('+ цена за 180 см', bed.prices.width180 || 0)) || 0;
-        bed.prices.width200 = parseInt(prompt('+ цена за 200 см', bed.prices.width200 || 0)) || 0;
-        bed.prices.teddy = parseInt(prompt('+ цена за велюр Teddy', bed.prices.teddy || 4000)) || 4000;
-        bed.prices.lamels = parseInt(prompt('+ цена за усиленную решётку', bed.prices.lamels || 10000)) || 10000;
-        bed.prices.lift = parseInt(prompt('+ цена за подъёмный механизм', bed.prices.lift || 9000)) || 9000;
-        saveBeds(); renderCatalog();
-    };
-
     window.deleteBed = function(id) {
         if (!confirm('Удалить модель?')) return;
         beds = beds.filter(b => b.id !== id);
@@ -304,13 +357,17 @@
     };
 
     document.getElementById('addBedBtn').addEventListener('click', () => {
-        const name = document.getElementById('bedName').value.trim();
         const basePrice = parseInt(document.getElementById('bedBasePrice').value) || 0;
-        if (!name) { alert('Введите название'); return; }
+        const photosStr = document.getElementById('bedPhotos').value.trim();
+        const photos = photosStr ? photosStr.split(',').map(s => s.trim()).filter(s => s) : [];
+        
+        const newId = beds.length > 0 ? Math.max(...beds.map(b => b.id)) + 1 : 1;
         const newBed = {
-            id: Math.max(0, ...beds.map(b => b.id)) + 1, name, basePrice,
-            desc: document.getElementById('bedDesc').value.trim(),
-            photos: document.getElementById('bedPhotos').value.split(',').map(s => s.trim()).filter(s => s),
+            id: newId,
+            name: generateBedName(newId),
+            basePrice,
+            desc: generateBedDesc(),
+            photos: photos.length ? photos : ['https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png'],
             prices: {
                 width140: parseInt(document.getElementById('priceWidth140').value) || 0,
                 width160: parseInt(document.getElementById('priceWidth160').value) || 0,
@@ -321,9 +378,8 @@
                 lift: parseInt(document.getElementById('priceLift').value) || 9000
             }
         };
-        if (!newBed.photos.length) newBed.photos = ['https://i7.imageban.ru/out/2026/04/18/2cb8237c0c09fb2d8f1e2d8bad13590f.png'];
         beds.push(newBed); saveBeds(); renderCatalog();
-        ['bedName','bedBasePrice','bedDesc','bedPhotos','priceWidth140','priceWidth160','priceWidth180','priceWidth200','priceTeddy','priceLamels','priceLift'].forEach(id => document.getElementById(id).value = '');
+        ['bedBasePrice','bedPhotos','priceWidth140','priceWidth160','priceWidth180','priceWidth200','priceTeddy','priceLamels','priceLift'].forEach(id => document.getElementById(id).value = '');
     });
 
     document.getElementById('resetDefaultBtn').addEventListener('click', () => {
